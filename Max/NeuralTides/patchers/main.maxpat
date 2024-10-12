@@ -10,7 +10,7 @@
 		}
 ,
 		"classnamespace" : "box",
-		"rect" : [ 34.0, 87.0, 1121.0, 929.0 ],
+		"rect" : [ 34.0, 87.0, 972.0, 929.0 ],
 		"bglocked" : 0,
 		"openinpresentation" : 0,
 		"default_fontsize" : 12.0,
@@ -39,70 +39,6 @@
 		"subpatcher_template" : "",
 		"assistshowspatchername" : 0,
 		"boxes" : [ 			{
-				"box" : 				{
-					"id" : "obj-49",
-					"maxclass" : "message",
-					"numinlets" : 2,
-					"numoutlets" : 1,
-					"outlettype" : [ "" ],
-					"patching_rect" : [ 1125.304577827453613, 788.0, 142.387559771537781, 22.0 ],
-					"text" : "0.0731"
-				}
-
-			}
-, 			{
-				"box" : 				{
-					"id" : "obj-50",
-					"maxclass" : "newobj",
-					"numinlets" : 6,
-					"numoutlets" : 1,
-					"outlettype" : [ "" ],
-					"patching_rect" : [ 1188.304577827453613, 745.0, 114.0, 22.0 ],
-					"text" : "scale -1. 1. 0.02 0.2"
-				}
-
-			}
-, 			{
-				"box" : 				{
-					"id" : "obj-48",
-					"maxclass" : "message",
-					"numinlets" : 2,
-					"numoutlets" : 1,
-					"outlettype" : [ "" ],
-					"patching_rect" : [ 964.612440228462219, 788.0, 142.387559771537781, 22.0 ],
-					"text" : "0.04549"
-				}
-
-			}
-, 			{
-				"box" : 				{
-					"id" : "obj-46",
-					"maxclass" : "newobj",
-					"numinlets" : 6,
-					"numoutlets" : 1,
-					"outlettype" : [ "" ],
-					"patching_rect" : [ 1028.0, 745.0, 124.0, 22.0 ],
-					"text" : "scale -1. 1. 0.02 0.2 4"
-				}
-
-			}
-, 			{
-				"box" : 				{
-					"fontsize" : 13.0,
-					"format" : 6,
-					"id" : "obj-34",
-					"maxclass" : "flonum",
-					"maximum" : 1.0,
-					"minimum" : -1.0,
-					"numinlets" : 1,
-					"numoutlets" : 2,
-					"outlettype" : [ "", "bang" ],
-					"parameter_enable" : 0,
-					"patching_rect" : [ 990.697638988494873, 701.162765622138977, 50.0, 23.0 ]
-				}
-
-			}
-, 			{
 				"box" : 				{
 					"fontsize" : 13.0,
 					"format" : 6,
@@ -2090,7 +2026,6 @@
 						"style" : "",
 						"subpatcher_template" : "",
 						"assistshowspatchername" : 0,
-						"visible" : 1,
 						"boxes" : [ 							{
 								"box" : 								{
 									"id" : "obj-27",
@@ -2149,7 +2084,6 @@
 										"style" : "",
 										"subpatcher_template" : "",
 										"assistshowspatchername" : 0,
-										"visible" : 1,
 										"boxes" : [ 											{
 												"box" : 												{
 													"comment" : "",
@@ -2195,7 +2129,7 @@
 													"numoutlets" : 1,
 													"outlettype" : [ "" ],
 													"patching_rect" : [ 64.0, 170.0, 163.0, 22.0 ],
-													"text" : "scale 0. 10000. 0.002 0.3 0.8"
+													"text" : "scale 0. 10000. 0.002 0.2 0.8"
 												}
 
 											}
@@ -3521,8 +3455,8 @@
 					"patching_rect" : [ 1035.632166624069214, 178.160916566848755, 175.0, 168.0 ],
 					"presentation" : 1,
 					"presentation_rect" : [ 24.705883, 21.176470999999999, 500.0, 500.0 ],
-					"xplace" : [ 0.272588234 ],
-					"yplace" : [ 0.757647058 ]
+					"xplace" : [ 0.550673333576747 ],
+					"yplace" : [ 0.534756449006853 ]
 				}
 
 			}
@@ -7683,7 +7617,7 @@
 													"numoutlets" : 1,
 													"outlettype" : [ "" ],
 													"patching_rect" : [ 431.0, 519.5, 218.0, 22.0 ],
-													"text" : "0.332269 0.46605 0.61916"
+													"text" : "0.092269 0.58605 0.70916"
 												}
 
 											}
@@ -8850,22 +8784,6 @@
 			}
 , 			{
 				"patchline" : 				{
-					"destination" : [ "obj-46", 0 ],
-					"order" : 1,
-					"source" : [ "obj-34", 0 ]
-				}
-
-			}
-, 			{
-				"patchline" : 				{
-					"destination" : [ "obj-50", 0 ],
-					"order" : 0,
-					"source" : [ "obj-34", 0 ]
-				}
-
-			}
-, 			{
-				"patchline" : 				{
 					"destination" : [ "obj-334", 0 ],
 					"source" : [ "obj-342", 0 ]
 				}
@@ -8998,13 +8916,6 @@
 			}
 , 			{
 				"patchline" : 				{
-					"destination" : [ "obj-48", 1 ],
-					"source" : [ "obj-46", 0 ]
-				}
-
-			}
-, 			{
-				"patchline" : 				{
 					"destination" : [ "obj-43", 0 ],
 					"order" : 1,
 					"source" : [ "obj-47", 0 ]
@@ -9055,13 +8966,6 @@
 					"destination" : [ "obj-342", 2 ],
 					"order" : 1,
 					"source" : [ "obj-5", 0 ]
-				}
-
-			}
-, 			{
-				"patchline" : 				{
-					"destination" : [ "obj-49", 1 ],
-					"source" : [ "obj-50", 0 ]
 				}
 
 			}
@@ -9370,7 +9274,7 @@
 ,
 		"dependency_cache" : [ 			{
 				"name" : "MC_LFO.gendsp",
-				"bootpath" : "~/GITEX/Max/NeuralTides/code",
+				"bootpath" : "~/GITEX_V2/GITEX_24/Max/NeuralTides/code",
 				"patcherrelativepath" : "../code",
 				"type" : "gDSP",
 				"implicit" : 1
@@ -9390,13 +9294,13 @@
 , 			{
 				"name" : "fluid.plotter.js",
 				"bootpath" : "~/Documents/Max 8/Packages/FluidCorpusManipulation/jsui",
-				"patcherrelativepath" : "../../../../Documents/Max 8/Packages/FluidCorpusManipulation/jsui",
+				"patcherrelativepath" : "../../../../../Documents/Max 8/Packages/FluidCorpusManipulation/jsui",
 				"type" : "TEXT",
 				"implicit" : 1
 			}
 , 			{
 				"name" : "multichannel_format.maxpat",
-				"bootpath" : "~/GITEX/Max/NeuralTides/patchers",
+				"bootpath" : "~/GITEX_V2/GITEX_24/Max/NeuralTides/patchers",
 				"patcherrelativepath" : ".",
 				"type" : "JSON",
 				"implicit" : 1

@@ -18,13 +18,9 @@ SynthDef(\play_slice, {
 
 	env = EnvGen.kr(Env([0, 1, 1, 0], [dursecs * 0.25, dursecs * 0.5, dursecs * 0.25], \lin), gate: Impulse.kr(1/dursecs), doneAction: 0);
 
-	sig = PitchShift.ar(sig, pitchRatio: \pRat.kr(1));
+	// sig = PitchShift.ar(sig, pitchRatio: \pRat.kr(1));
 
 	sig = sig * env;
-
-	// lfo = SinOsc.ar(LFNoise1.ar(ExpRand(0.02,0.03)).range(0.125/4, 0.25)).exprange(\minAmp.kr(0.01), \maxAmp.kr(1));
-	// sig = sig * lfo;
-	// SendTrig.kr(Impulse.kr(10), id, lfo);
 
 	sig = Pan2.ar(sig, SinOsc.ar(LFNoise1.ar(ExpRand(0.03,0.05)).range(0.167, 0.667)));
 

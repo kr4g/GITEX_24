@@ -9,6 +9,7 @@ s = Server.local;
 s.options.outDevice_(
 	"MacBook Pro Speakers"
 	// "External Headphones"
+	// "Ryan’s AirPods P"
 	// "Scarlett 4i4 USB"
 	// "Klipsch One II"
 	// "UMC1820"
@@ -23,10 +24,12 @@ s.newBusAllocators;
 s.reboot;
 )
 
+Synth(\default);
+
 // the folder containing the cop
 // ~folder = FluidFilesPath();
 // ~folder = "/Users/ryanmillett/SONAR/AudioFiles";
-~folder = "/Users/ryanmillett/Downloads/Final_Normalized/1";
+~folder = "/Users/ryanmillett/Downloads/Final_Normalized/3";
 
 // load into a buffer
 ~loader = FluidLoadFolder(~folder).play(s,{"done loading folder".postln;});
@@ -53,16 +56,18 @@ if(~loader.buffer.numChannels > 1){
 };
 )
 
-~src.write("/Users/ryanmillett/Downloads/src1.wav");
+// ~src = Buffer.read(s, "/Users/ryanmillett/Downloads/src1.wav");
+~src.write("/Users/ryanmillett/Downloads/src3.wav");
 
 // slice the buffer in non real-time
 (
 ~indices = Buffer(s);
-FluidBufOnsetSlice.processBlocking(s,~src,metric:9,threshold:0.01,windowSize:2048,hopSize:-1,minSliceLength:2,filterSize:51,indices:~indices,action:{
+FluidBufOnsetSlice.processBlocking(s,~src,metric:9,threshold:0.05,windowSize:2048,hopSize:-1,minSliceLength:2,filterSize:91,indices:~indices,action:{
 	"found % slice points".format(~indices.numFrames).postln;
 	"average duration per slice: %".format(~src.duration / (~indices.numFrames+1)).postln;
 });
 )
+
 
 // analysis
 (
@@ -96,124 +101,79 @@ FluidBufOnsetSlice.processBlocking(s,~src,metric:9,threshold:0.01,windowSize:204
 
 (
 ~umapped = FluidDataSet(s);
-FluidUMAP(s,numNeighbours:9,minDist:0.15).fitTransform(~analyses,~umapped,action:{"umap done".postln});
+FluidUMAP(s,numNeighbours:3,minDist:0.1).fitTransform(~analyses,~umapped,action:{"umap done".postln});
 )
-
-~umapped.print;
 
 // normalize
 (
 ~normed = FluidDataSet(s);
-FluidNormalize(s).fitTransform(~umapped,~normed);
+FluidNormalize(s).fitTransform(~umapped,~normed, {"transform done.".postln});
 )
 
-~normed = FluidDataSet(s);
-~normed.read("/Users/ryanmillett/GITEX/Max/NeuralTides/data/dr_full.json", action: {"loaded".postln});
-
-~normed.print;
-
-~normed.write("/Users/ryanmillett/GITEX/Max/NeuralTides/data/umap_norm_4.json", action: {"saved".postln});
+// ~normed.write("/Users/ryanmillett/GITEX/Max/NeuralTides/data/umap_norm_3a.json", action: {"saved".postln});
+//
+// ~normed = FluidDataSet(s);
+// ~normed.read("/Users/ryanmillett/GITEX/Max/NeuralTides/data/umap_norm_1.json", action: {"loaded".postln});
 
 // fit a kdtree
 ~tree = FluidKDTree(s).fit(~normed, action: {"fit done".postln});
 
-// SynthDefs
+// -------------------------------------------------------------------------------
+
+(PathName.new(thisProcess.nowExecutingPath).parentPath ++ "synthdefs.scd").load;
+(PathName.new(thisProcess.nowExecutingPath).parentPath ++ "oscdefs.scd").load;
+
+// -------------------------------------------------------------------------------
+
 (
-SynthDef(\play_slice, {
-	arg id = 0, index = 0, src, indices, amp = 1, pan = 0, gate = 1;
-
-	var startsamp, stopsamp, phs, sig, lfo, dursecs, env;
-
-	startsamp = Index.kr(indices, index);
-	stopsamp = Index.kr(indices, index + 1);
-	phs = Phasor.ar(0, BufRateScale.ir(src), startsamp, stopsamp, startsamp);
-	sig = BufRd.ar(1, src, phs);
-	dursecs = (stopsamp - startsamp) / BufSampleRate.ir(src);
-
-	dursecs = min(dursecs, 1);
-
-	env = EnvGen.kr(Env([0, 1, 1, 0], [dursecs * 0.125, dursecs * 0.5, dursecs * 0.375], \lin), gate: Impulse.kr(1/dursecs), doneAction: 0);
-
-	sig = sig * env;
-
-	// lfo = SinOsc.ar(LFNoise1.ar(ExpRand(0.02,0.03)).range(0.125/4, 0.25)).exprange(\minAmp.kr(0.01), \maxAmp.kr(1));
-	// sig = sig * lfo;
-	// SendTrig.kr(Impulse.kr(10), id, lfo);
-
-	sig = Pan2.ar(sig, SinOsc.ar(LFNoise1.ar(ExpRand(0.03,0.05)).range(0.167, 0.667)));
-
-	sig = sig * amp * EnvGen.kr(Env.perc(0, \duration.kr(1)), doneAction: 2);
-
-	Out.ar(0, sig);
-}).add;
-
-SynthDef(\ampCtrl, {
-	var sig = In.ar(0);
-	var lfo = SinOsc.ar(LFNoise1.ar(ExpRand(0.02,0.03)).range(0.125/8, 0.125)).exprange(\minAmp.kr(0.001), \maxAmp.kr(1));
-	sig = sig * lfo;
-	SendTrig.kr(Impulse.kr(20), \id.kr(-1), lfo);
-	Out.ar(0, sig);
-}).add;
-
-SynthDef(\verb, {
-	var sig = In.ar(0);
-	var verb = JPverb.ar(sig, t60: 3.0, size: 3.5, earlyDiff: 0.707, modDepth: 0.5, modFreq: 2.5);
-	sig = XFade2.ar(sig, verb, (\amt.kr(0.67) * 2) - 1);
-	Out.ar(0, sig);
-}).add;
+~src3 = ~src;//Buffer.read(s, "/Users/ryanmillett/Downloads/src1.wav");
+~indices3 = ~indices;//Buffer.read(s, "/Users/ryanmillett/Downloads/idc1.wav");
 )
 
 (
-Routine({
-	4.do{ |i|
-		Synth(\ampCtrl, [
-			\id, i + 1,
-		]);
-	};
-}).play;
-)
+~sources = (
+	1: (src: ~src1, indices: ~indices1),
+	2: (src: ~src2, indices: ~indices2),
+	3: (src: ~src3, indices: ~indices3),
+	4: (src: ~src4, indices: ~indices4)
+);
 
-(
-~oscdef = OSCdef(\receiveIndex, { |msg|
-	var index = msg[1];
-	index.postln;
-	~play_slice.(index.asInteger);
-}, '/index');
-
-~tr = OSCdef(\handleTrig, { |msg|
-	var id = msg[2];
-	// msg[3].postln;
-	NetAddr("127.0.0.1", 7400).sendMsg("/lfo" ++ id, msg[3]);
-}, '/tr');
-)
-
-(
-~verb = Synth.tail(nil, \verb);
-
-~synthQueue = [];
+~synthQueue = (
+	1: [],
+	2: [],
+	3: [],
+	4: []
+);
 
 ~play_slice = {
-	arg index, id = 1, src = nil, indices = nil;
+	arg id = 1, index = -1, duration = 1.0, amp = 1.0;
 	var newSynth = nil;
+	var src, indices;
 
-	if (~synthQueue.size >= 8) {
-		if (~synthQueue[0].isPlaying) {
-			~synthQueue[0].free;
+	src = ~sources[id][\src];
+	indices = ~sources[id][\indices];
+
+	if (~synthQueue[id].size >= 4) {
+		if (~synthQueue[id][0].isPlaying) {
+			~synthQueue[id][0].free;
 		};
-		~synthQueue = ~synthQueue.drop(1);
+		~synthQueue[id] = ~synthQueue[id].drop(1);
 	};
 
 	newSynth = Synth(\play_slice, [
-		\src, ~src,
-		\indices, ~indices,
+		\src, src,
+		\indices, indices,
 		\id, id,
 		\index, index,
-		\duration, 1
+		\duration, duration,
+		\amp, amp
 	]).onFree();
 
-	~synthQueue = ~synthQueue.add(newSynth);
+	~synthQueue[id] = ~synthQueue[id].add(newSynth);
 };
 )
+
+~verb = Synth.tail(nil, \verb);
 
 // plot
 (
@@ -230,9 +190,9 @@ Routine({
 			~tree.kNearest(point,1,{
 				arg nearest;
 				if(nearest != previous){
-					nearest.postln;
+					// nearest.postln;
 					view.highlight_(nearest);
-					~play_slice.(nearest.asInteger);
+					~play_slice.(id: 3, index: nearest.asInteger, duration: 3);
 					previous = nearest;
 				}
 			});
@@ -240,17 +200,3 @@ Routine({
 	}
 });
 )
-
-
-
-s.record("/Users/ryanmillett/Downloads/audio2.wav", numChannels: 2, duration: 10);
-(
-x = Synth(\play_slice, [
-		\src, ~src,
-		\indices, ~indices,
-		\id, 1,
-		\index, 566,
-		\duration, 10
-	]).onFree();
-)
-x.free;

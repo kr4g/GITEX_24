@@ -72,7 +72,16 @@ Routine({
 	3: [],
 	4: []
 );
+
+~state = (
+	1: (amp: 0.5, pitch: 1.0),
+	2: (amp: 0.5, pitch: 1.0),
+	3: (amp: 0.5, pitch: 1.0),
+	4: (amp: 0.5, pitch: 1.0)
+);
 )
+
+~fx = Synth.tail(nil, \verb);
 
 // defs
 (PathName.new(thisProcess.nowExecutingPath).parentPath ++ "synthdefs.scd").load;

@@ -24,8 +24,6 @@ s.newBusAllocators;
 s.reboot;
 )
 
-thisProcess.openUDPPort(57121);
-thisProcess.openPorts;
 
 // sources
 (
@@ -40,10 +38,23 @@ var buffPath = PathName.new(PathName.new(thisProcess.nowExecutingPath).parentPat
 
 // slices
 (
-~indices1 = ~sliceBuffer.(~src1,metric:9,threshold:0.05,windowSize:1024,hopSize:-1,minSliceLength:4,filterSize:51);
-~indices2 = ~sliceBuffer.(~src2,metric:9,threshold:0.08,windowSize:1024,hopSize:-1,minSliceLength:4,filterSize:51);
-~indices3 = ~sliceBuffer.(~src3,metric:9,threshold:0.02,windowSize:2048,hopSize:-1,minSliceLength:2,filterSize:11);
-~indices4 = ~sliceBuffer.(~src4,metric:9,threshold:0.09,windowSize:2048,hopSize:-1,minSliceLength:4,filterSize:101);
+Routine({
+	~indices1 = Buffer(s);
+	~sliceBuffer.value(~src1,~indices1,metric:9,threshold:0.05,windowSize:1024,hopSize:-1,minSliceLength:4,filterSize:51);
+	s.sync;
+
+	~indices2 = Buffer(s);
+	~sliceBuffer.value(~src2,~indices2,metric:9,threshold:0.08,windowSize:1024,hopSize:-1,minSliceLength:4,filterSize:51);
+	s.sync;
+
+	~indices3 = Buffer(s);
+	~sliceBuffer.value(~src3,~indices3,metric:9,threshold:0.02,windowSize:2048,hopSize:-1,minSliceLength:2,filterSize:11);
+	s.sync;
+
+	~indices4 = Buffer(s);
+	~sliceBuffer.value(~src4,~indices4,metric:9,threshold:0.09,windowSize:2048,hopSize:-1,minSliceLength:4,filterSize:101);
+	s.sync;
+}).play;
 )
 
 
@@ -53,6 +64,13 @@ var buffPath = PathName.new(PathName.new(thisProcess.nowExecutingPath).parentPat
 	2: (src: ~src2, indices: ~indices2),
 	3: (src: ~src3, indices: ~indices3),
 	4: (src: ~src4, indices: ~indices4)
+);
+
+~synthQueue = (
+	1: [],
+	2: [],
+	3: [],
+	4: []
 );
 )
 

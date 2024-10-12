@@ -1,11 +1,10 @@
 (
-~sliceBuffer = { |src, metric = 9, threshold = 0.05, windowSize = 1024, hopSize = -1, minSliceLength = 2, filterSize = 51|
-	var indices = Buffer(s);
+~sliceBuffer = { |src, indices, metric = 9, threshold = 0.05, windowSize = 1024, hopSize = -1, minSliceLength = 2, filterSize = 51|
 	FluidBufOnsetSlice.processBlocking(s, src, metric: metric, threshold: threshold, windowSize: windowSize, hopSize: hopSize, minSliceLength: minSliceLength, filterSize: filterSize, indices: indices, action: {
 		"found % slice points".format(indices.numFrames).postln;
 		"average duration per slice: %".format(src.duration / (indices.numFrames+1)).postln;
+		"-----------------------------------".postln;
 	});
-	indices
 };
 
 ~play_slice = {

@@ -2,7 +2,7 @@
 ~idxOSC = OSCdef(\receive_index, {
 	arg msg;
 	var id = msg[1], index = msg[2], duration = msg[3];
-	// "ID: %, idx: %".format(id, index).postln;
+	// "ID: %, idx: %".format(id, index).postln
 	~play_slice.value(id, index, duration);
 }, '/index');
 

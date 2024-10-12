@@ -24,6 +24,8 @@ s.newBusAllocators;
 s.reboot;
 )
 
+thisProcess.openUDPPort(57121);
+thisProcess.openPorts;
 
 // sources
 (

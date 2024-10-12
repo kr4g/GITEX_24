@@ -29,7 +29,7 @@ Synth(\default);
 // the folder containing the cop
 // ~folder = FluidFilesPath();
 // ~folder = "/Users/ryanmillett/SONAR/AudioFiles";
-~folder = "/Users/ryanmillett/Downloads/Final_Normalized/3";
+~folder = "/Users/ryanmillett/Downloads/Final_Normalized/4";
 
 // load into a buffer
 ~loader = FluidLoadFolder(~folder).play(s,{"done loading folder".postln;});
@@ -57,12 +57,12 @@ if(~loader.buffer.numChannels > 1){
 )
 
 // ~src = Buffer.read(s, "/Users/ryanmillett/Downloads/src1.wav");
-~src.write("/Users/ryanmillett/Downloads/src3.wav");
+~src.write("/Users/ryanmillett/Downloads/src4.wav");
 
 // slice the buffer in non real-time
 (
 ~indices = Buffer(s);
-FluidBufOnsetSlice.processBlocking(s,~src,metric:9,threshold:0.05,windowSize:2048,hopSize:-1,minSliceLength:2,filterSize:91,indices:~indices,action:{
+FluidBufOnsetSlice.processBlocking(s,~src,metric:9,threshold:0.09,windowSize:2048,hopSize:-1,minSliceLength:4,filterSize:101,indices:~indices,action:{
 	"found % slice points".format(~indices.numFrames).postln;
 	"average duration per slice: %".format(~src.duration / (~indices.numFrames+1)).postln;
 });
@@ -101,7 +101,7 @@ FluidBufOnsetSlice.processBlocking(s,~src,metric:9,threshold:0.05,windowSize:204
 
 (
 ~umapped = FluidDataSet(s);
-FluidUMAP(s,numNeighbours:3,minDist:0.1).fitTransform(~analyses,~umapped,action:{"umap done".postln});
+FluidUMAP(s,numNeighbours:9,minDist:0.1).fitTransform(~analyses,~umapped,action:{"umap done".postln});
 )
 
 // normalize
@@ -110,7 +110,7 @@ FluidUMAP(s,numNeighbours:3,minDist:0.1).fitTransform(~analyses,~umapped,action:
 FluidNormalize(s).fitTransform(~umapped,~normed, {"transform done.".postln});
 )
 
-// ~normed.write("/Users/ryanmillett/GITEX/Max/NeuralTides/data/umap_norm_3a.json", action: {"saved".postln});
+~normed.write("/Users/ryanmillett/GITEX/Max/NeuralTides/data/umap_norm_4a.json", action: {"saved".postln});
 //
 // ~normed = FluidDataSet(s);
 // ~normed.read("/Users/ryanmillett/GITEX/Max/NeuralTides/data/umap_norm_1.json", action: {"loaded".postln});
@@ -126,8 +126,8 @@ FluidNormalize(s).fitTransform(~umapped,~normed, {"transform done.".postln});
 // -------------------------------------------------------------------------------
 
 (
-~src3 = ~src;//Buffer.read(s, "/Users/ryanmillett/Downloads/src1.wav");
-~indices3 = ~indices;//Buffer.read(s, "/Users/ryanmillett/Downloads/idc1.wav");
+~src4 = ~src;//Buffer.read(s, "/Users/ryanmillett/Downloads/src1.wav");
+~indices4 = ~indices;//Buffer.read(s, "/Users/ryanmillett/Downloads/idc1.wav");
 )
 
 (
@@ -145,32 +145,7 @@ FluidNormalize(s).fitTransform(~umapped,~normed, {"transform done.".postln});
 	4: []
 );
 
-~play_slice = {
-	arg id = 1, index = -1, duration = 1.0, amp = 1.0;
-	var newSynth = nil;
-	var src, indices;
 
-	src = ~sources[id][\src];
-	indices = ~sources[id][\indices];
-
-	if (~synthQueue[id].size >= 4) {
-		if (~synthQueue[id][0].isPlaying) {
-			~synthQueue[id][0].free;
-		};
-		~synthQueue[id] = ~synthQueue[id].drop(1);
-	};
-
-	newSynth = Synth(\play_slice, [
-		\src, src,
-		\indices, indices,
-		\id, id,
-		\index, index,
-		\duration, duration,
-		\amp, amp
-	]).onFree();
-
-	~synthQueue[id] = ~synthQueue[id].add(newSynth);
-};
 )
 
 ~verb = Synth.tail(nil, \verb);
@@ -192,7 +167,7 @@ FluidNormalize(s).fitTransform(~umapped,~normed, {"transform done.".postln});
 				if(nearest != previous){
 					// nearest.postln;
 					view.highlight_(nearest);
-					~play_slice.(id: 3, index: nearest.asInteger, duration: 3);
+					~play_slice.(id: 4, index: nearest.asInteger, duration: 1);
 					previous = nearest;
 				}
 			});

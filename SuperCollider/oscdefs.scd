@@ -15,7 +15,6 @@
 ~pitchOSC = OSCdef(\receive_pitch, {
 	arg msg;
 	var id = msg[1], pitch = msg[2];
-	msg.postln;
 	~state[id][\pitch] = pitch;
 }, '/pitch');
 

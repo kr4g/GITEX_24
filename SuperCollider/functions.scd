@@ -8,14 +8,14 @@
 };
 
 ~play_slice = {
-	arg id = -1, index = -1, duration = 1;
+	arg id = -1, index = -1, duration = 1, pitchRatio = 1, amp = 1;
 	var newSynth = nil;
 	var src, indices;
 
 	src = ~sources[id][\src];
 	indices = ~sources[id][\indices];
 
-	if (~synthQueue[id].size >= 2) {
+	if (~synthQueue[id].size >= 4) {
 		if (~synthQueue[id][0].isPlaying) {
 			~synthQueue[id][0].free;
 		};
@@ -28,7 +28,8 @@
 		\id, id,
 		\index, index,
 		\duration, duration,
-		// \pRat, rrand(0.5,2.0);
+		\pRat, pitchRatio,
+		\amp, amp
 	]).onFree();
 
 	~synthQueue[id] = ~synthQueue[id].add(newSynth);

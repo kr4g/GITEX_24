@@ -5,6 +5,7 @@ SynthDef(\play_slice, {
 
 	var startsamp, stopsamp, phs, sig, lfo, dursecs, env;
 	var duration = \duration.kr(1);
+	var alpha = Rand(0.0,1.0);
 
 	startsamp = Index.kr(indices, index);
 	stopsamp = Index.kr(indices, index + 1);
@@ -15,7 +16,9 @@ SynthDef(\play_slice, {
 
 	dursecs = min(dursecs, 1);
 
-	env = EnvGen.kr(Env([0, 1, 1, 0], [dursecs * 0.125, dursecs * 0.5, dursecs * 0.375], \lin), gate: Impulse.kr(1/dursecs), doneAction: 0);
+	env = EnvGen.kr(Env([0, 1, 1, 0], [dursecs * 0.25, dursecs * 0.5, dursecs * 0.25], \lin), gate: Impulse.kr(1/dursecs), doneAction: 0);
+
+	sig = PitchShift.ar(sig, pitchRatio: \pRat.kr(1));
 
 	sig = sig * env;
 
@@ -25,7 +28,7 @@ SynthDef(\play_slice, {
 
 	sig = Pan2.ar(sig, SinOsc.ar(LFNoise1.ar(ExpRand(0.03,0.05)).range(0.167, 0.667)));
 
-	sig = sig * \amp.kr(1, 0.05) * EnvGen.kr(Env.perc(0.1 * duration, duration, curve: 2), doneAction: 2) * -16.dbamp;
+	sig = sig * \amp.kr(1, 0.05) * EnvGen.kr(Env.perc(alpha * duration, (1.0 - alpha) * duration, curve: 2), doneAction: 2) * -16.dbamp;
 
 	Out.ar(0, sig);
 }).add;

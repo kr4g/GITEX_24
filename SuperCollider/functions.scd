@@ -15,7 +15,7 @@
 	src = ~sources[id][\src];
 	indices = ~sources[id][\indices];
 
-	if (~synthQueue[id].size >= 3) {
+	if (~synthQueue[id].size >= 2) {
 		if (~synthQueue[id][0].isPlaying) {
 			~synthQueue[id][0].free;
 		};
@@ -27,7 +27,8 @@
 		\indices, indices,
 		\id, id,
 		\index, index,
-		\duration, duration
+		\duration, duration,
+		// \pRat, rrand(0.5,2.0);
 	]).onFree();
 
 	~synthQueue[id] = ~synthQueue[id].add(newSynth);

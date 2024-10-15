@@ -8,19 +8,21 @@
 };
 
 ~play_slice = {
-	arg id = -1, index = -1, duration = 1, pitchRatio = 1, amp = 1;
+	arg id = -1, index = -1, duration = 1, pitchRatio = 1, amp = 1, alpha = 0;
 	var newSynth = nil;
-	var src, indices;
+	var src, indices, bus;
 
 	src = ~sources[id][\src];
 	indices = ~sources[id][\indices];
 
-	if (~synthQueue[id].size >= 4) {
+	if (~synthQueue[id].size >= 5) {
 		if (~synthQueue[id][0].isPlaying) {
 			~synthQueue[id][0].free;
 		};
 		~synthQueue[id] = ~synthQueue[id].drop(1);
 	};
+
+	bus = ~ampBuses[id - 1];
 
 	newSynth = Synth(\play_slice, [
 		\src, src,
@@ -28,8 +30,8 @@
 		\id, id,
 		\index, index,
 		\duration, duration,
-		\pRat, pitchRatio,
-		\amp, amp
+		\alpha, alpha,
+		\out, bus
 	]).onFree();
 
 	~synthQueue[id] = ~synthQueue[id].add(newSynth);

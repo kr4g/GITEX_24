@@ -5,19 +5,20 @@ ServerOptions.devices.do{ |item|
 )
 
 (
+Server.killAll;
 s = Server.local;
 s.options.outDevice_(
-	"MacBook Pro Speakers"
+	// "MacBook Pro Speakers"
 	// "External Headphones"
-	// "Ryan’s AirPods P"
+	"Ryan’s AirPods P"
 	// "Scarlett 4i4 USB"
 	// "Klipsch One II"
 	// "UMC1820"
 	// "MME : OUT 01-10 (BEHRINGER UMC 1820)"
 );
-s.options.inDevice_("Built-in Microph");
-s.options.numOutputBusChannels_(2);
+// s.options.inDevice_("Built-in Microph");
 s.options.numInputBusChannels_(0);
+s.options.numOutputBusChannels_(2);
 s.options.sampleRate_(48000);
 s.options.memSize_(2.pow(20));
 s.newBusAllocators;
@@ -29,7 +30,7 @@ Synth(\default);
 // the folder containing the cop
 // ~folder = FluidFilesPath();
 // ~folder = "/Users/ryanmillett/SONAR/AudioFiles";
-~folder = "/Users/ryanmillett/Downloads/Final_Normalized/4";
+// ~folder = "/Users/ryanmillett/Downloads/Final_Normalized/1";
 
 // load into a buffer
 ~loader = FluidLoadFolder(~folder).play(s,{"done loading folder".postln;});
@@ -56,13 +57,12 @@ if(~loader.buffer.numChannels > 1){
 };
 )
 
-// ~src = Buffer.read(s, "/Users/ryanmillett/Downloads/src1.wav");
-~src.write("/Users/ryanmillett/Downloads/src4.wav");
+~src = Buffer.read(s, "/Users/ryanmillett/GITEX_V2/GITEX_24/Buffers/Audio/src4a.wav");
 
 // slice the buffer in non real-time
 (
 ~indices = Buffer(s);
-FluidBufOnsetSlice.processBlocking(s,~src,metric:9,threshold:0.09,windowSize:2048,hopSize:-1,minSliceLength:4,filterSize:101,indices:~indices,action:{
+FluidBufOnsetSlice.processBlocking(s,~src,metric:9,threshold:0.1,windowSize:2048,hopSize:-1,minSliceLength:4,filterSize:101,indices:~indices,action:{
 	"found % slice points".format(~indices.numFrames).postln;
 	"average duration per slice: %".format(~src.duration / (~indices.numFrames+1)).postln;
 });
@@ -101,54 +101,37 @@ FluidBufOnsetSlice.processBlocking(s,~src,metric:9,threshold:0.09,windowSize:204
 
 (
 ~umapped = FluidDataSet(s);
-FluidUMAP(s,numNeighbours:9,minDist:0.1).fitTransform(~analyses,~umapped,action:{"umap done".postln});
-)
-
-// normalize
-(
 ~normed = FluidDataSet(s);
-FluidNormalize(s).fitTransform(~umapped,~normed, {"transform done.".postln});
+FluidUMAP(s,numNeighbours:3,minDist:0.15).fitTransform(~analyses,~umapped,action:{
+	"umap done".postln;
+	FluidNormalize(s).fitTransform(~umapped,~normed,{
+		"transform done.".postln;
+		~tree = FluidKDTree(s).fit(~normed, action: {"fit done".postln});
+	});
+});
 )
 
-~normed.write("/Users/ryanmillett/GITEX/Max/NeuralTides/data/umap_norm_4a.json", action: {"saved".postln});
-//
-// ~normed = FluidDataSet(s);
-// ~normed.read("/Users/ryanmillett/GITEX/Max/NeuralTides/data/umap_norm_1.json", action: {"loaded".postln});
-
-// fit a kdtree
-~tree = FluidKDTree(s).fit(~normed, action: {"fit done".postln});
+~normed.write("/Users/ryanmillett/GITEX_V2/GITEX_24/Max/NeuralTides/data/umap_norm_4a.json", action: {"saved".postln});
 
 // -------------------------------------------------------------------------------
-
-(PathName.new(thisProcess.nowExecutingPath).parentPath ++ "synthdefs.scd").load;
-(PathName.new(thisProcess.nowExecutingPath).parentPath ++ "oscdefs.scd").load;
-
-// -------------------------------------------------------------------------------
-
 (
-~src4 = ~src;//Buffer.read(s, "/Users/ryanmillett/Downloads/src1.wav");
-~indices4 = ~indices;//Buffer.read(s, "/Users/ryanmillett/Downloads/idc1.wav");
+(PathName.new(thisProcess.nowExecutingPath).parentPath ++ "synthdefs.scd").load;
+(PathName.new(thisProcess.nowExecutingPath).parentPath ++ "functions.scd").load;
+// (PathName.new(thisProcess.nowExecutingPath).parentPath ++ "oscdefs.scd").load;
 )
+// -------------------------------------------------------------------------------
 
 (
 ~sources = (
-	1: (src: ~src1, indices: ~indices1),
-	2: (src: ~src2, indices: ~indices2),
-	3: (src: ~src3, indices: ~indices3),
-	4: (src: ~src4, indices: ~indices4)
+	1: (src: ~src, indices: ~indices),
 );
 
 ~synthQueue = (
 	1: [],
-	2: [],
-	3: [],
-	4: []
 );
-
-
 )
 
-~verb = Synth.tail(nil, \verb);
+// ~verb = Synth.tail(nil, \verb);
 
 // plot
 (
@@ -167,7 +150,7 @@ FluidNormalize(s).fitTransform(~umapped,~normed, {"transform done.".postln});
 				if(nearest != previous){
 					// nearest.postln;
 					view.highlight_(nearest);
-					~play_slice.(id: 4, index: nearest.asInteger, duration: 1);
+					~play_slice.(id: 1, index: nearest.asInteger, duration: 3);
 					previous = nearest;
 				}
 			});
